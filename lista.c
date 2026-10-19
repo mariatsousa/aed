@@ -93,16 +93,33 @@ void libera(PLista ultimo){
     free(ultimo);
 }
 
+PLista insereMeio(PLista ultimo, int pos, int n){
+    PLista  p = ultimo;
+
+    do{
+        p = p->prox;
+        pos--;
+    }while(p != ultimo || pos != 0);
+
+    if(pos == 0){
+        return p = insere(p, n);
+    }else{
+        printf("Posição não existe! \n\n");
+        return ultimo;
+    }
+}
+
 int main(){
     PLista l = inicializa(l);
-    int op, n;
+    int op, pos, n;
 
     do{
         printf("--- MENU --- \n");
         printf("(1) Inserir \n");
         printf("(2) Remover \n");
         printf("(3) Imprimir \n");
-        printf("(4) Sair \n\n");
+        printf("(4) Inserir no meio \n");
+        printf("(5) Sair \n\n");
 
         printf("Opcao: ");
         scanf("%d", &op);
@@ -129,6 +146,18 @@ int main(){
                 break;
 
             case 4:
+                printf("Posicao que deseja inserir: ");
+                scanf("%d", &pos);
+                printf("Insira valor: ");
+                scanf("%d", &n);
+                if(pos == 1){
+                    l = insere(l, n);
+                }else{
+                    l = insereMeio(l, pos, n);
+                }
+                break;
+
+            case 5:
                 libera(l);
                 break;
 
@@ -136,7 +165,7 @@ int main(){
                 printf("Opcao Invalida!");
 
         }
-    }while(op != 4);
+    }while(op != 5);
 
     return 0;
 }
