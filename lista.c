@@ -3,7 +3,7 @@
 
 typedef struct lista{
     int info;
-    lista *prox;
+    struct lista *prox;
 }TLista;
 
 typedef TLista *PLista;
@@ -19,6 +19,8 @@ PLista insere (PLista ultimo, int n){
 
     if(ultimo == NULL){
         novo->prox = novo;
+        novo->info = n;
+        return novo;
     }
 
     novo->info = n;
@@ -28,11 +30,12 @@ PLista insere (PLista ultimo, int n){
     return ultimo;
 }
 
-PLista remove(PLista ultimo, int *n){
+PLista remover(PLista ultimo, int n){
     PLista aux = ultimo->prox, ant = ultimo;
 
     if(ultimo == NULL){
-        return;
+        printf("Lista vazia!");
+        return ultimo;
     }
 
     do{
@@ -42,16 +45,22 @@ PLista remove(PLista ultimo, int *n){
                 return NULL;
             }
             ant->prox = aux->prox;
-            n = aux->info;
             printf("Removido %d \n\n", n);
+            if(aux == ultimo){
+                free(aux);
+                return ant;
+            }
             free(aux);
-            return aux;
+            return ultimo;
         }
+
+        ant = ant->prox;
+        aux = aux->prox;
 
     }while(aux != ultimo->prox);
     
     printf("Nao Encontrado \n\n");
-    return l;
+    return ultimo;
 }
 
 void imprime(PLista l){
@@ -63,25 +72,25 @@ void imprime(PLista l){
     }
 
     do{
-        printf("%d", p->info);
+        printf("%d ", p->info);
         p = p->prox;
     }while(p != l->prox);
 }
 
-void libera(PLista l){
-    PLista aux = l->prox;
+void libera(PLista ultimo){
+    PLista aux = ultimo->prox;
 
-    if(l == NULL){
+    if(ultimo == NULL){
         return;
     }
 
-    do{
-        l->prox = aux->prox;
-        free(aux);
-        aux = l->prox;
-    }while(l != l->prox);
+    while(aux != ultimo){
+        aux = aux->prox;
+        free(ultimo->prox);
+        ultimo->prox = aux;
+    }
 
-    free(l);
+    free(ultimo);
 }
 
 int main(){
@@ -108,14 +117,15 @@ int main(){
                 break;
 
             case 2:
-                printf("Insira valor para remover: ");
+                printf("Insira valor para gremover: ");
                 scanf("%d", &n);
 
-                l = remove(l, *n);
+                l = remover(l, n);
                 break;
 
             case 3:
                 imprime(l);
+                printf("\n\n");
                 break;
 
             case 4:
