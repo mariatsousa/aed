@@ -26,7 +26,7 @@ PLista insere (PLista ultimo, int n){
     novo->info = n;
     novo->prox = ultimo->prox;
     ultimo->prox = novo;
-
+l
     return ultimo;
 }
 
