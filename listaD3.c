@@ -54,7 +54,7 @@ PLista visitSite(PLista l, char site[]){
     l->ant->prox = novo;
     l->ant = novo;
 
-    return novo;
+    return l;
 }
 
 void mostrarHistorico(PLista l){
@@ -64,6 +64,8 @@ void mostrarHistorico(PLista l){
     }
 
     PLista p = l;
+
+    printf("Historico de navegacao: ");
 
     while(p != l->ant){
         printf("%s -> ", p->site);
@@ -75,15 +77,131 @@ void mostrarHistorico(PLista l){
 
 PLista removeRepeticao(PLista l){
     if(l == NULL){
-        printf("Historico vazio.");
+        printf("Historico vazio. \n\n");
+        return l;
+    }
+
+    if(l->prox == l){
         return l;
     }
 
     PLista aux, p = l;
 
     do{
-        if(p->site == p->prox->site){
-            
+        if(strcmp(p->site, p->prox->site) == 0){
+            aux = p->prox;
+
+            if(aux == p){   
+                p->prox = p;
+                p->ant = p;
+            }else{
+                aux = p->prox;
+                p->prox = aux->prox;
+                aux->prox->ant = p;
+            }
+            free(aux);
+        }else{
+            p = p->prox;
         }
-    }while(p != l);
+
+    }while(p->prox != l);
+
+    printf("Repeticoes removidas. \n\n");
+    return p;
+}
+
+PLista avancar(PLista l){
+    if(l == NULL){
+        printf("Historico  vazio. \n\n");
+        return l;
+    }
+
+    l = l->prox;
+    printf("Site acessado: %s \n\n", l->site);
+    return l;
+}
+
+PLista voltar(PLista l){
+    if(l == NULL){
+        printf("Historico vazio. \n\n");
+        return l;
+    }
+
+    l = l->ant;
+    printf("Site acessado: %s \n\n", l->site);
+    return l;
+}
+
+void libera(PLista l){
+    if(l == NULL){
+        return;
+    }
+
+    PLista aux, p = l->prox;
+
+    while(p != l){
+        aux = p;
+        p = p->prox;
+        free(aux);
+    }
+    
+    free(l);
+}
+
+int main(){
+    PLista l = NULL;
+    int op;
+    char site[30];
+
+    do{
+        printf("--- MENU --- \n");
+        printf("(1) Acessar site \n");
+        printf("(2) Mostrar historico de navegacao \n");
+        printf("(3) Remover duplicata \n");
+        printf("(4) Avancar \n");
+        printf("(5) Voltar \n");
+        printf("(6) Sair \n\n");
+
+        printf("Insira opcao desejada: ");
+        scanf("%d", &op);
+        getchar();
+        printf("\n");
+
+        switch(op){
+            case 1:
+                printf("Nome do site: ");
+                fgets(site, sizeof(site), stdin);
+                site[strlen(site) - 1] = '\0';
+
+                l = visitSite(l, site);
+                break;
+
+            case 2:
+                mostrarHistorico(l);
+                break;
+
+            case 3:
+                l = removeRepeticao(l);
+                break;
+
+            case 4:
+                l = avancar(l);
+                break;
+
+            case 5:
+                l = voltar(l);
+                break;
+
+            case 6:
+                libera(l);
+                break;
+
+            default:
+                printf("Opcao invalida. \n\n");
+                break;
+        }
+
+    }while(op != 6);
+
+    return 0;
 }
